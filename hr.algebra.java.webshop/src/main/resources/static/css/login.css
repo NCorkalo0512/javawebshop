@@ -1,0 +1,77 @@
+.login {
+    max-width: 400px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    font-family: "Ubuntu", sans-serif;
+}
+.login-header {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #295f4e;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+}
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+.login-form p {
+    margin-bottom: 15px;
+}
+
+img{
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
+.login-form input {
+    padding: 10px;
+    border: 2px solid #6db193;
+    border-radius: 50px;
+    outline: none;
+    font-size: 16px;
+    text-align: center;
+}
+.login-form input[type="submit"] {
+    padding: 10px 15px;
+    border: none;
+    background: #6db193;
+    color: white;
+    cursor: pointer;
+    font-weight: 700;
+    border-radius: 50px;
+    transition: all 0.2s ease;
+}
+.login-form input[type="submit"]:hover {
+    background: #bad8b6;
+}
+.submit-button {
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .login {
+        width: 90%;
+        padding: 15px;
+    }
+    .login-form input[type="email"],
+    .login-form input[type="password"] {
+        font-size: 14px;
+    }
+    .login-header {
+        font-size: 20px;
+    }}
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f5f5f5;
+}

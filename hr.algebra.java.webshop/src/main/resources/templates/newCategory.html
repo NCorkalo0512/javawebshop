@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Category</title>
+    <link rel="stylesheet" type="text/css" href="/css/newCategory.css" />
+    <script src="/js/main-scripts.js"></script>
+</head>
+<body>
+
+<div class="newCategory"  sec:authorize="hasAuthority('ADMIN')">
+  <h2 class="newCategory-header">New category</h2>
+    <div class="alert alert-danger">
+        <ul>
+            <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+        </ul>
+    </div>
+  <form class="newCategory-container" th:action="@{/api/categories}" method="post">
+    <p><label>
+        <input type="text" placeholder="Name" name="nameCategory" required>
+    </label></p>
+   <div class="button-container">
+     <p><input type="submit" value="Create"></p>
+       <p><button type="button" class="button" onclick="location.href='/api/categories/listCategories'">Cancel</button></p>
+   </div>
+
+  </form>
+</div>
+<div sec:authorize="!hasAuthority('ADMIN')">
+    <p>You do not have permission to view this page.</p>
+</div>
+<div th:replace="footer.html :: footerFragment"></div>
+</body>
+</html>

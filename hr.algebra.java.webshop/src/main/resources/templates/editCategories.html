@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Category</title>
+    <link rel="stylesheet" type="text/css" href="/css/editCategoriesProducts.css" />
+    <script src="/js/main-scripts.js"></script>
+</head>
+<body>
+<div class="newCategory" sec:authorize="hasAuthority('ADMIN')">
+    <h2 class="newCategory-header">Edit Category</h2>
+    <div class="alert alert-danger">
+        <ul>
+            <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+        </ul>
+    </div>
+    <form class="newCategory-container" th:action="@{/api/categories/update/{id}(id=${categoryDTO.idCategory})}" method="post">
+        <p>
+            <input type="text" placeholder="Name" name="nameCategory" th:value="${categoryDTO.nameCategory}" required pattern="[A-Za-z0-9 ]{3,}" title="Category name must be at least 3 characters long and only contain letters, numbers, and spaces.">
+        </p>
+        <div class="button-container">
+            <input type="submit" value="Update">
+            <button type="button" onclick="location.href='/api/categories'">Cancel</button>
+        </div>
+    </form>
+</div>
+<div sec:authorize="!hasAuthority('ADMIN')">
+    <p>You do not have permission to view this page.</p>
+</div>
+<div th:replace="footer.html :: footerFragment"></div>
+</body>
+</html>

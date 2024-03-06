@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="en">
+<head>
+  <title>Checkout</title>
+  <script src="https://www.paypal.com/sdk/js?client-id=AToQ1Kbg3TukifyCOBMHx8M30nA8Xxp7Ely8nnACxrTuqfuLqlo7KflrSZJsYiHb5HwJ4dw7_27z-PHK&components=buttons"></script>
+  <link rel="stylesheet" type="text/css" href="/css/checkout.css" />
+  <script src="/js/main-scripts.js"></script>
+</head>
+<body>
+<div th:replace="header.html :: headerFragment"></div>
+<div class="checkout-form" th:if="${not #lists.isEmpty(carts.checkout)}" sec:authorize="isAuthenticated()">
+  <h2>Payment method</h2>
+  <div  class="alert alert-danger">
+    <ul>
+      <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+    </ul>
+  </div>
+  <form th:action="@{/processCheckout}" method="post">
+    <label><input type="radio" name="paymentMethod" value="cash" checked> Cash</label>
+    <div id="paypal-button-container" >
+      <label><input type="radio" name="paymentMethod" value="paypal"> PayPal</label>
+    </div>
+
+    <h2>Order review</h2>
+    <div class="order-review">
+      <ul>
+        <li th:each="item : ${cart.items}">
+          <span th:text="${item.name}">Product name</span>
+          <span th:text="${item.price}">Price</span>
+          <span th:text="${item.quantity}">Quantity</span>
+        </li>
+      </ul>
+      <p>Total: <span th:text="${cart.total}">Total</span></p>
+    </div>
+
+    <button type="submit">Submit</button>
+    <button type="button" class="cancel" onclick="window.location.href='/carts.html'">Cancel</button>
+
+  </form>
+</div>
+<div sec:authorize="!isAuthenticated()">
+  <p>You must be logged in!</p>
+</div>
+
+<script th:inline="javascript">
+  const totalAmount = [[${cart.total}]];
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementsByName('paymentMethod').forEach((element) => {
+      element.addEventListener('change', handlePaymentMethodChange);
+    });
+  });
+
+  function handlePaymentMethodChange(event) {
+    const paymentMethod = event.target.value;
+    const paypalButtonContainer = document.getElementById('paypal-button-container');
+
+    if (paymentMethod === 'paypal') {
+      paypalButtonContainer.style.display = 'block';
+      renderPayPalButton();
+    } else {
+      paypalButtonContainer.style.display = 'none';
+      paypalButtonContainer.innerHTML = '';
+    }
+  }
+
+  function renderPayPalButton() {
+    const paypalButtonContainer = document.getElementById('paypal-button-container');
+    paypalButtonContainer.innerHTML = '';
+    paypal.Buttons({
+      createOrder: (actions) => {
+        return actions.order.create({
+          purchase_units: [{
+            amount: {
+              value: totalAmount
+            }
+          }]
+        });
+      },
+      onApprove: (actions) => {
+        return actions.order.capture().then((details) => {
+          alert('Transaction completed by ' + details.username);
+          window.location.href = '/orderConfirmation.html';
+        });
+      }
+    }).render('#paypal-button-container');
+  }
+</script>
+<div th:replace="footer.html :: footerFragment"></div>
+</body>
+</html>

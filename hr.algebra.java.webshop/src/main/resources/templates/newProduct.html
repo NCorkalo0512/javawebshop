@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>New Product</title>
+
+  <link rel="stylesheet" type="text/css" href="/css/newProduct.css" />
+  <script src="/js/main-scripts.js"></script>
+</head>
+<body>
+
+<div class="newCategory" sec:authorize="hasAuthority('ADMIN')">
+  <h2 class="newCategory-header">New product</h2>
+  <div class="alert alert-danger">
+    <ul>
+      <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+    </ul>
+  </div>
+  <form class="newCategory-container" th:action="@{/api/products}" method="post">
+    <p><label>
+      <input type="nameProduct" placeholder="Name Product" name="nameProduct" required>
+    </label></p>
+    <p><label>
+      <input type="description" placeholder="description" name="description" required>
+    </label></p>
+    <p><label>
+      <input type="price" placeholder="price" name="price" required>
+    </label></p>
+    <p><label>
+      <input type="categoryId" placeholder="categoryId" name="categoryId" required>
+    </label></p>
+    <div class="button-container">
+      <p><input type="submit" value="Create"></p>
+      <p><button type="button" class="button" onclick="location.href='/api/listProducts'">Cancel</button></p>
+    </div>
+
+  </form>
+</div>
+<div sec:authorize="!hasAuthority('ADMIN')">
+  <p>You do not have permission to view this page.</p>
+</div>
+<div th:replace="footer.html :: footerFragment"></div>
+</body>
+</html>

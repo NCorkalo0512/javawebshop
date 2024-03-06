@@ -1,0 +1,10 @@
+.custom-footer {
+    background-color: #6db193;
+    border-top: 4px solid white;
+}
+
+.custom-footer .text-center {
+    padding: 20px 0;
+    font-size: 1.1em;
+    font-family: 'Arial', sans-serif;
+}

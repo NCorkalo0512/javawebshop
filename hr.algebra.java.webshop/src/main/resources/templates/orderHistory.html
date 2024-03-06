@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="en">
+<head>
+  <title>History order</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/css/orderHistory.css" />
+  <script src="/js/main-scripts.js"></script>
+</head>
+<body>
+
+
+<div class="order-history" sec:authorize="isAuthenticated()">
+  <div th:replace="header.html :: headerFragment"></div>
+  <h1>History of Your Orders</h1>
+
+  <div th:if="${not #lists.isEmpty(orderHistory)}">
+    <table>
+      <thead>
+      <tr>
+        <th>Order number</th>
+        <th>Date</th>
+        <th>Total amount</th>
+        <th>Order details</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="order : ${orderHistory}">
+        <td th:text="${order.idOrder}"></td>
+        <td th:text="${#dates.format(order.orderTime, 'dd-MM-yyyy')}"></td>
+        <td th:text="${order.totalAmount}"></td>
+        <td><a th:href="@{/orderDetails(orderId=${order.idOrder})}"></a></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+<div sec:authorize="!isAuthenticated()">
+  <p>You must be logged in to view your order history.</p>
+</div>
+<div th:replace="footer.html :: footerFragment"></div>
+</body>
+</html>

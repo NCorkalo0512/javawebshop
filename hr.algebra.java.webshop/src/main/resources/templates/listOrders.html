@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Purchase history</title>
+  <link rel="stylesheet" type="text/css" href="/css/listOrders.css" />
+  <script src="/js/main-scripts.js"></script>
+</head>
+<body>
+<div th:replace="header.html :: headerFragment"></div>
+
+<div class="content" sec:authorize="hasAuthority('ADMIN')">
+  <h1 >Purchase history</h1>
+  <div class="alert alert-danger">
+    <ul>
+      <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+    </ul>
+  </div>
+  <div class="header">
+    <div class="search-container">
+    <form th:action="@{/api/orders/search}" method="get">
+      <div class="search-field">
+        <label>
+          <input type="number" name="userId" placeholder="Enter User ID" min="1" title="User ID must be a positive number."/>
+        </label>
+      </div>
+      <div class="search-field">
+        <label>
+          <input type="date" name="start" placeholder="Start Date" required/>
+        </label>
+        <label>
+          <input type="date" name="end" placeholder="End Date" required/>
+        </label>
+      </div>
+
+      <div>
+        <button type="submit">Search</button>
+      </div>
+    </form>
+      <div th:if="${orders}">
+        <div th:each="order : ${orders}" class="order-card">
+          <div class="order-details">Order ID: <span th:text="${order.idOrder}"></span></div>
+          <div class="order-details">User ID: <span th:text="${order.user.idUsers}"></span></div>
+          <div class="order-details">Order Time: <span th:text="${order.orderTime}"></span></div>
+          <div class="order-details">Total Amount: <span th:text="${order.totalAmount}"></span></div>
+          <div class="order-details">Payment Method: <span th:text="${order.paymentMethod}"></span></div>
+        </div>
+      </div>
+
+  </div>
+  </div>
+</div>
+<div sec:authorize="!hasAuthority('ADMIN')">
+  <p>You do not have permission to view this page.</p>
+</div>
+
+<div th:replace="footer.html :: footerFragment"></div>
+</body>
+</html>

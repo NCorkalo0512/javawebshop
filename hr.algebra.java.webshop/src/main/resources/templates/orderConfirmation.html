@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="en">
+<head>
+  <title>Order confirmation</title>
+  <link rel="stylesheet" type="text/css" href="/css/orderConfirmation.css" />
+  <script src="/js/main-scripts.js"></script>
+</head>
+<body>
+
+<div class="order-confirmation" sec:authorize="isAuthenticated()">
+  <h1>Thank you for your order!</h1>
+
+  <div class="order-details"  >
+    <h2>Order details</h2>
+    <p>Order number: <span th:text="${order.idOrder}"></span></p>
+    <p>Date: <span th:text="${#dates.format(order.orderTime, 'dd-MM-yyyy')}"></span></p>
+    <p>Total amount: <span th:text="${order.totalAmount}"></span></p>
+  </div>
+
+  <div class="post-order-options">
+    <h3>Post order options</h3>
+    <a th:href="@{/api/listProducts}" class="button">Home page</a>
+    <a th:href="@{/api/orders/orderHistory}" class="button"> Previous orders</a>
+  </div>
+</div>
+<div sec:authorize="!isAuthenticated()">
+  <p>You must be logged in to view your order confirmation.</p>
+</div>
+<div th:replace="footer.html :: footerFragment"></div>
+</body>
+</html>

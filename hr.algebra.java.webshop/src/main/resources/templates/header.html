@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <script src="/js/main-scripts.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<header th:fragment="headerFragment">
+    <div>
+        <img th:src="@{/market.png}" src="../static/market.png" class="grocery-image" style="width: 50px; height: auto; display: inline-block">
+    <div class="welcome-text" sec:authorize="isAuthenticated()" style="display:inline-block; font-size:  24px; font-weight: bold; margin-bottom: 10px">
+        Welcome back, <span th:text="${#authentication.name}">Username</span>!
+    </div>
+        <div class="welcome-text" sec:authorize="!isAuthenticated()" style="display:inline-block; font-size:  24px; font-weight: bold; margin-bottom: 10px">
+            Welcome back, anonymous!
+        </div>
+
+    </div>
+    <div class="menu-icon" onclick="toggleMenu()">
+        <svg id="i-menu" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="green" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+            <path d="M4 8 L28 8 M4 16 L28 16 M4 24 L28 24" />
+        </svg>
+    </div>
+    <div class="side-menu">
+        <a href="/api/categories">Category</a>
+        <a href="/api/listProducts">Product</a>
+        <a href="/api/login-logs" sec:authorize="hasAuthority('ADMIN')">History data</a>
+        <a href="/api/orders/search" sec:authorize="hasAuthority('ADMIN')">Purchase history</a>
+        <a href="/api/orders/orderHistory" sec:authorize="hasAuthority('USER')">Order history</a>
+        <div class="logout">
+            <a href="/logout" onclick="confirmLogout()" >Logout</a>
+        </div>
+    </div>
+</header>
+</body>
+</html>

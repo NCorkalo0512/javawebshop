@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>LoginLogs</title>
+    <link rel="stylesheet" type="text/css" href="/css/listLogs.css" />
+    <script src="/js/main-scripts.js"></script>
+
+</head>
+<body>
+<div th:replace="header.html :: headerFragment"></div>
+<div class="content" sec:authorize="hasAuthority('ADMIN')">
+    <h1>Data history</h1>
+    <div  class="alert alert-danger">
+        <ul>
+            <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+        </ul>
+    </div>
+    <div class="header">
+        <form onsubmit="return validateDateRange()">
+        <div class="search-container">
+            <form action="#" th:action="@{/api/login-logs/search}" method="get">
+                <div class="search-field">
+                    <input type="text" name="userId" placeholder="Enter User ID"  min="1" title="User ID must be a positive number."/>
+                </div>
+                <div class="search-field" >
+                    <label>
+                        <input type="date" name="start" placeholder="Start Date" required/>
+                    </label>
+                    <label>
+                        <input type="date" name="end" placeholder="End Date" required/>
+                    </label>
+                </div>
+                <div class="search-field">
+                    <input type="text" name="ipAddress" placeholder="Enter IP Address" pattern="\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b" title="Enter a valid IP address."/>
+                </div>
+                <button type="submit">Search</button>
+            </form>
+        </div>
+        </form>
+    </div>
+
+</div>
+<div sec:authorize="!hasAuthority('ADMIN')">
+    <p>You do not have permission to view this page.</p>
+</div>
+<script>
+    function validateDateRange(startInput, endInput) {
+        const startDate = new Date(startInput.value);
+        const endDate = new Date(endInput.value);
+        if (startDate > endDate) {
+            alert("Start date must be before the end date.");
+            return false;
+        }
+        return true;
+    }
+</script>
+<div th:replace="footer.html :: footerFragment"></div>
+</body>
+</html>

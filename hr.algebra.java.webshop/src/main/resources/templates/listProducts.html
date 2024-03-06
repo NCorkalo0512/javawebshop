@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="en">
+<head>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="/css/listProducts.css" />
+  <script src="/js/main-scripts.js"></script>
+  <title>Product</title>
+
+</head>
+<body>
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  var isAdmin = [[${#authorization.expression('hasAuthority(''ADMIN'')')}]];
+  var isUser = [[${#authorization.expression('hasAuthority(''USER'')')}]];
+  /*]]>*/
+</script>
+
+
+<div class="content">
+  <div class="header">
+    <div th:replace="header.html :: headerFragment"></div>
+
+    <h1>Products</h1>
+    <div class="alert alert-danger">
+      <ul>
+        <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+      </ul>
+    </div>
+    <div class="top-right">
+      <div class="search-container">
+      <button sec:authorize="hasAuthority('ADMIN')" onclick="location.href='/api/products/newProduct'">New Product</button>
+        </div>
+      <a th:href="@{/api/carts/new}" sec:authorize="hasAuthority('USER')">
+        <i class="fa fa-cart-plus" aria-hidden="true"></i>
+      </a>
+      <a th:href="@{/api/carts/latest}" sec:authorize="hasAuthority('USER')">
+        <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+      </a>
+      <i class="fas fa-sign-in-alt" onclick="location.href='/login'" style="cursor:pointer;"></i>
+    </div>
+  </div>
+
+
+<!-- Search by name  -->
+  <div class="search-bars">
+  <div class="search-container">
+    <form action="/api/products/search/by-name" method="get">
+      <label>
+        <input type="text" name="name" placeholder="Search by Name" required>
+      </label>
+      <button type="submit">Search</button>
+    </form>
+  </div>
+  <!-- Search by category  -->
+    <div class="search-container">
+      <label for="categoryInput">Category name:</label>
+      <input type="text" id="categoryInput" placeholder="Enter category name">
+      <button type="button" onclick="searchCategoryByName()">Search</button>
+    </div>
+  </div>
+  <!-- Product list -->
+  <div class="products-list">
+  <div th:each="product : ${products}" class="category-card">
+    <h2 th:text="${product.nameProduct}">Product name</h2>
+    <div class="category-actions">
+      <a th:href="@{/api/products/editProduct/{id}(id=${product.idProduct})}" sec:authorize="hasAuthority('ADMIN')" class="edit-button">Edit</a>
+
+      <a th:href="@{/api/products/delete/{id}(id=${product.idProduct})}" sec:authorize="hasAuthority('ADMIN')" onclick="confirmDelete(${product.id})">Delete</a>
+      <div class="category-card" th:data-product-id="${product.idProduct}">
+        <i class="fa fa-cart-plus" sec:authorize="hasAuthority('USER')" th:onclick="'addToCart(\'' + ${product.idProduct} + '\')'"></i>
+        <label>
+          <input type="number" min="1" value="1" class="quantity-input" sec:authorize="hasAuthority('USER')"/>
+        </label>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+
+  function toggleMenu() {
+    const menu = document.querySelector('.side-menu');
+    menu.classList.toggle('open');
+  }
+
+  function confirmLogout() {
+    if (confirm("Are you sure you want to logout?")) {
+      $.ajax({
+        url: '/logout',
+        type: 'POST',
+        success: function() {
+          window.location.href = '/login';
+        },
+        error: function(error) {
+          console.error('Error:', error);
+        }
+      });
+    }
+  }
+  function addToCart(productId) {
+    const quantityInput = document.querySelector('.category-card[data-product-id="' + productId + '"] .quantity-input');
+    const quantity = quantityInput.value;
+
+    const cartItemData = {
+      productId: productId,
+      quantity: quantity
+    };
+
+    fetch('/api/cart-items/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',},
+      body: JSON.stringify(cartItemData)
+    })
+            .then(response => {
+              if (response.ok) {
+                console.log("Product added to cart successfully.");
+                return response.text();
+              } else {
+                throw new Error('Something went wrong when adding to cart');
+              }
+            })
+            .then(text => {
+              console.log(text);})
+            .catch(error => {
+              console.error('Error:', error);
+            });
+  }
+  function searchCategoryByName() {
+    const categoryName = $('#categoryInput').val().trim();
+    if (!categoryName) {
+      alert('Please enter a category name.');
+      return;
+    }
+
+    $.ajax({
+      url: `/api/products/search/by-category-name?name=${categoryName}`,
+      type: 'GET',
+      success: function(products) {
+        updateProductList(products);
+      },
+      error: function(error) {
+        console.error('Error:', error);
+      }
+    });
+  }
+
+  function updateProductList(products) {
+    const productsList = document.querySelector('.products-list');
+
+    productsList.innerHTML = '';
+
+    if (products.length === 0) {
+      productsList.innerHTML = '<p>No products found.</p>';
+      return;
+    }
+
+    products.forEach(function(product) {
+      const productCard = document.createElement('div');
+      productCard.className = 'category-card';
+
+      const productName = document.createElement('h2');
+      productName.textContent = product.nameProduct;
+      productCard.appendChild(productName);
+
+      const categoryActions = document.createElement('div');
+      categoryActions.className = 'category-actions';
+
+      if (isAdmin) {
+        const editButton = document.createElement('a');
+        editButton.setAttribute('href', `/api/products/editProduct/${product.idProduct}`);
+        editButton.className = 'edit-button';
+        editButton.textContent = 'Edit';
+        categoryActions.appendChild(editButton);
+
+        const deleteButton = document.createElement('a');
+        deleteButton.setAttribute('href', `/api/products/delete/${product.idProduct}`);
+        deleteButton.textContent = 'Delete';
+        deleteButton.onclick = function() { confirmDelete(product.idProduct); };
+        categoryActions.appendChild(deleteButton);
+      }
+
+      if (isUser) {
+        const cartIcon = document.createElement('i');
+        cartIcon.className = 'fa fa-cart-plus';
+        cartIcon.setAttribute('data-product-id', product.idProduct);
+        cartIcon.onclick = function() { addToCart(product.idProduct); };
+        categoryActions.appendChild(cartIcon);
+
+        const quantityInput = document.createElement('input');
+        quantityInput.type = 'number';
+        quantityInput.min = '1';
+        quantityInput.value = '1';
+        quantityInput.className = 'quantity-input';
+        categoryActions.appendChild(quantityInput);
+      }
+
+      productCard.appendChild(categoryActions);
+
+      productsList.appendChild(productCard);
+    });
+  }
+
+</script>
+<div th:replace="footer.html :: footerFragment"></div>
+</body>
+</html>

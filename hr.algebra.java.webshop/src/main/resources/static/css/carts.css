@@ -1,0 +1,149 @@
+/*CARTS HTML*/
+.title {
+    font-family: fontSerif,serif;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+.heading h1 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.continue {
+    background-color: #6db193;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0;
+}
+
+.cartSection h3 {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.itemNumber {
+    font-style: italic;
+}
+
+.total.price {
+    font-weight: bold;
+    text-align: right;
+}
+
+.remove.cart a {
+    color: red;
+    text-decoration: none;
+    font-weight: bold;
+}
+.subtotal {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.subtotal ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.subtotal .total {
+    margin-bottom: 10px;
+}
+
+.subtotal .total.final {
+    font-size: 18px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.subtotal .total.final .label {
+    margin-right: 10px;
+}
+.btn.continue {
+    font-size: 20px;
+    padding: 12px 24px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.cartWrap {
+    list-style-type: none;
+    padding: 0;
+}
+
+.cartWrap .items {
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cartSection {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.cartSection h3 {
+    flex-grow: 1;
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.itemNumber {
+    margin-right: 10px;
+    color: #666;
+}
+
+.qty {
+    width: 50px;
+    margin-right: 10px;
+    text-align: center;
+}
+.qty-label {
+    margin-top: 10px;
+}
+
+.remove.cart {
+    align-self: flex-end;
+    margin-top: 10px;
+}
+
+.remove.cart a {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #ff4d4d;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.remove.cart a:hover {
+    background-color: #ff6666;
+}
+
+@media (max-width: 600px) {
+    .cartSection {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .remove.cart {
+        align-self: flex-start;
+    }
+}

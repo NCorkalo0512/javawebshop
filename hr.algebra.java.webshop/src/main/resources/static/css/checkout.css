@@ -1,0 +1,73 @@
+/*CHECKOUT*/
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.checkout-form {
+    width: 80%;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+form {
+    margin-top: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.order-review ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.order-review li {
+    margin-bottom: 5px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+}
+
+button {
+    display: block;
+    background-color: #6db193;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #57a17a;
+}
+
+@media (max-width: 600px) {
+    .checkout-form {
+        width: 100%;
+        margin: 10px;
+        padding: 10px;
+    }
+}
+button.cancel {
+    background-color: #ff4d4d;
+    margin-left: 10px;
+}
+
+button.cancel:hover {
+    background-color: #ff6666;
+}

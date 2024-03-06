@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="en">
+<head>
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" type="text/css" href="/css/carts.css" />
+    <script src="/js/main-scripts.js"></script>
+</head>
+<body>
+<div class="content" sec:authorize="isAuthenticated()">
+    <h1 class="title">SHOPPING CART</h1>
+    <div  class="alert alert-danger">
+        <ul>
+            <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+        </ul>
+    </div>
+    <div class="heading">
+        <h1>MY CART</h1>
+        <a href="/api/listProducts" class="continue">Continue Shopping</a>
+    </div>
+    <div class="cart">
+        <ul class="cartWrap">
+
+            <li th:each="item : ${items}">
+                <div class="infoWrap">
+                    <div class="cartSection">
+                        <p class="itemNumber" th:text="'#'+${item.idCartItem}"></p>
+                        <h3 th:text="${item.product.nameProduct}">Item Name 1</h3>
+
+                        <label class="qty-label">Quantity:
+                            <input type="text" class="qty" th:value="${item.quantity}"  min="1" required title="Please enter a valid quantity."/>
+                        </label>
+
+                        <div class="total price">
+                            <p ></p>
+                        </div>
+
+                        <div class="remove cart">
+                            <a th:href="@{/api/cart-items/delete/{id}(id=${item.idCartItem})}" class="remove">x</a>
+                        </div>
+                </div>
+                </div>
+            </li>
+
+        </ul>
+    </div>
+    <div class="subtotal">
+        <ul>
+            <li class="total final">
+                <span class="label">Total:</span>
+                <span class="value" th:text="${totalPrice}">0.00</span>
+            </li>
+            <li class="total">
+                <form th:action="@{/api/carts/checkout}" method="post">
+                    <button type="submit" class="btn continue">Checkout</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+<div sec:authorize="!isAuthenticated()">
+    <p>You must be logged in!</p>
+</div>
+<div th:replace="footer.html :: footerFragment"></div>
+</body>
+</html>
